@@ -1,3 +1,4 @@
+
 from flask import Blueprint, jsonify
 import internal.resources.rss_feed as rss
 
@@ -19,10 +20,11 @@ def news_article():
     if articles:
         for article in articles:
             article_data.append({
+                'id': article['id'],
                 'title': article['title'],
                 'link': article['link'],
                 'description': article['description'],
-                'published': article['published'],
+                'published': article['published'].strftime('%Y-%m-%d %H:%M:%S'),
                 'source': article['source']
             })
         return jsonify(article_data)

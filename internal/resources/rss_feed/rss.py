@@ -5,6 +5,8 @@ import feedparser
 import internal.resources.rss_feed as rss
 import re
 from bs4 import BeautifulSoup
+from datetime import datetime
+from time import mktime
 
 
 class RSSFeed:
@@ -59,10 +61,11 @@ class RSSFeed:
         articles = []
         for entry in feed.entries:
             article = {
+                'id': entry.id,
                 'title': entry.title,
                 'link': entry.link if 'link' in entry else self.extract_link_from_description(entry.description),
                 'description': self.clean_description(entry.description),
-                'published': entry.published,
+                'published': datetime.fromtimestamp(mktime(entry.published_parsed)),
                 'source': entry.source.title if 'source' in entry else 'Unknown'
             }
             articles.append(article)
