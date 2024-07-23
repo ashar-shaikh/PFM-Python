@@ -22,8 +22,15 @@ class RSSFeed:
         # Handle StockSymbol (Assuming OR logic for multiple symbols)
         if rss.STOCK_SYMBOL in self.params:
             stock_symbols_query = ' OR '.join(self.params[rss.STOCK_SYMBOL])
-            query_params['q'] = stock_symbols_query
+            if len(stock_symbols_query) > 4 and stock_symbols_query[:4] == ' OR ':
+                stock_symbols_query = stock_symbols_query[4:]
+            query_params['q'] = "(" + stock_symbols_query + ")"
 
+        if rss.SEARCH_QUERY in self.params:
+            if len(query_params['q']) > 1:
+                query_params['q'] += ' AND ' + self.params[rss.SEARCH_QUERY]
+            else:
+                query_params['q'] = self.params[rss.SEARCH_QUERY]
         # Handle date range
         date_query = []
         if rss.AFTER_DATE in self.params:
@@ -38,9 +45,13 @@ class RSSFeed:
             else:
                 query_params['q'] = ' '.join(date_query)
 
+        if rss.COUNTRY in self.params:
+            query_params['ceid'] = self.params[rss.COUNTRY]
+
         # Handle language
         if rss.LANGUAGE in self.params:
             query_params['hl'] = self.params[rss.LANGUAGE]
+
 
         # Encode query parameters
         query_string = urlencode(query_params)
@@ -85,5 +96,8 @@ class RSSFeed:
 
     def fetch_results(self):
         feed = self.fetch_feed()
+        if not feed:
+            return None, 0
         articles = self.parse_feed(feed)
-        return articles
+        count = len(articles)
+        return articles, count
