@@ -1,0 +1,86 @@
+from datetime import datetime
+from urllib.parse import urlencode
+import requests
+import feedparser
+import internal.resources.rss_feed as rss
+import re
+from bs4 import BeautifulSoup
+
+
+class RSSFeed:
+    base_url = "https://news.google.com/rss/search?"
+
+    def __init__(self, params):
+        self.params = params
+
+    def build_url(self):
+        # Initialize query parameters
+        query_params = {}
+
+        # Handle StockSymbol (Assuming OR logic for multiple symbols)
+        if rss.STOCK_SYMBOL in self.params:
+            stock_symbols_query = ' OR '.join(self.params[rss.STOCK_SYMBOL])
+            query_params['q'] = stock_symbols_query
+
+        # Handle date range
+        date_query = []
+        if rss.AFTER_DATE in self.params:
+            after_date = self.params[rss.AFTER_DATE]
+            date_query.append(f'after:{after_date}')
+        if rss.BEFORE_DATE in self.params:
+            before_date = self.params[rss.BEFORE_DATE]
+            date_query.append(f'before:{before_date}')
+        if date_query:
+            if 'q' in query_params:
+                query_params['q'] += ' ' + ' '.join(date_query)
+            else:
+                query_params['q'] = ' '.join(date_query)
+
+        # Handle language
+        if rss.LANGUAGE in self.params:
+            query_params['hl'] = self.params[rss.LANGUAGE]
+
+        # Encode query parameters
+        query_string = urlencode(query_params)
+
+        # Construct full URL
+        full_url = self.base_url + query_string
+
+        return full_url
+
+    def fetch_feed(self):
+        url = self.build_url()
+        response = requests.get(url)
+        feed_data = feedparser.parse(response.content)
+
+        return feed_data
+
+    def parse_feed(self, feed):
+        articles = []
+        for entry in feed.entries:
+            article = {
+                'title': entry.title,
+                'link': entry.link if 'link' in entry else self.extract_link_from_description(entry.description),
+                'description': self.clean_description(entry.description),
+                'published': entry.published,
+                'source': entry.source.title if 'source' in entry else 'Unknown'
+            }
+            articles.append(article)
+        return articles
+
+    def clean_description(self, description):
+        cleaner = re.compile('<.*?>')
+        cleantext = re.sub(cleaner, '', description)
+        return cleantext
+
+    def extract_link_from_description(self, description):
+        soup = BeautifulSoup(description, 'html.parser')
+        a_tag = soup.find('a', href=True)
+        if a_tag:
+            return a_tag['href']
+        return None
+
+    def fetch_results(self):
+        feed = self.fetch_feed()
+        articles = self.parse_feed(feed)
+        return articles
