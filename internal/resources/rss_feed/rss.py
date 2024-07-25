@@ -21,10 +21,10 @@ class RSSFeed:
 
         # Handle StockSymbol (Assuming OR logic for multiple symbols)
         if rss.STOCK_SYMBOL in self.params:
-            stock_symbols_query = ' OR '.join(self.params[rss.STOCK_SYMBOL])
+            stock_symbols_query = ' OR'.join(self.params[rss.STOCK_SYMBOL])
             if len(stock_symbols_query) > 4 and stock_symbols_query[:4] == ' OR ':
                 stock_symbols_query = stock_symbols_query[4:]
-            query_params['q'] = "(" + stock_symbols_query + ")"
+            query_params['q'] = "(intitle:(" + stock_symbols_query + ") AND PSX)"
 
         if rss.SEARCH_QUERY in self.params:
             if len(query_params['q']) > 1:
@@ -77,7 +77,8 @@ class RSSFeed:
                 'link': entry.link if 'link' in entry else self.extract_link_from_description(entry.description),
                 'description': self.clean_description(entry.description),
                 'published': datetime.fromtimestamp(mktime(entry.published_parsed)),
-                'source': entry.source.title if 'source' in entry else 'Unknown'
+                'source': entry.source.title if 'source' in entry else 'Unknown',
+                'source_url': entry.source.href
             }
             articles.append(article)
         return articles

@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 import internal.resources.rss_feed as rss
-news_article_bp = Blueprint('news-articles', __name__)
+
+endpoint = 'news-articles'
+news_article_bp = Blueprint(endpoint, __name__)
 
 
-@news_article_bp.route('/news-articles', methods=['GET'])
+@news_article_bp.route('/' + endpoint, methods=['GET'])
 def news_article():
     parameter_data = request.args
     stock_symbols = parameter_data.getlist('stock_symbols')
@@ -22,8 +24,7 @@ def news_article():
         rss.LANGUAGE: 'en',
         rss.AFTER_DATE: after_date,
         rss.BEFORE_DATE:  before_date,
-        rss.COUNTRY: 'PK',
-        rss.SEARCH_QUERY: 'PSX'
+        rss.COUNTRY: 'PK'
     }
     if query:
         params[rss.SEARCH_QUERY] = query
@@ -38,7 +39,8 @@ def news_article():
                 'link': article['link'],
                 'description': article['description'],
                 'published': article['published'].strftime('%Y-%m-%d %H:%M:%S'),
-                'source': article['source']
+                'source': article['source'],
+                'source_url': article['source_url']
             })
 
         return jsonify({"status": "success","data": article_data,"count": count}), 200
