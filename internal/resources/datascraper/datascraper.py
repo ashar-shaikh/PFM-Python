@@ -48,14 +48,14 @@ class DataScraper:
         soup = BeautifulSoup(raw_data, 'html.parser')
 
         # Remove unwanted tags
-        for element in soup(['script', 'style', 'header', 'footer', 'nav', 'aside', 'form', 'iframe']):
+        for element in soup(['script', 'style', 'header', 'footer', 'nav', 'aside', 'form', 'iframe', 'table']):
             element.decompose()
 
-        # Remove elements with certain classes or ids (common for ads, pop-ups, etc.)
-        for element in soup.find_all(class_=re.compile('ad|banner|popup|footer|header|donations', re.IGNORECASE)):
-            element.decompose()
-        for element in soup.find_all(id=re.compile('ad|banner|popup|footer|header|donations', re.IGNORECASE)):
-            element.decompose()
+        # # Remove elements with certain classes or ids (common for ads, pop-ups, etc.)
+        # for element in soup.find_all(class_=re.compile('ad|banner|popup|footer|header|donations', re.IGNORECASE)):
+        #     element.decompose()
+        # for element in soup.find_all(id=re.compile('ad|banner|popup|footer|header|donations', re.IGNORECASE)):
+        #     element.decompose()
 
         # Extract the main content by targeting specific tags
         main_content = []
@@ -92,8 +92,27 @@ class DataScraper:
 
         return cleantext.strip()
 
+    def initiate_chrome_driver(self):
+        # Set up Chrome options
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-popup-blocking")
+        chrome_options.add_argument("--disable-infobars")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-notifications")
+        chrome_options.add_argument("--disable-default-apps")
+        # User agent
+        chrome_options.add_argument(f"user-agent={self.random_user_agent()}")
 
-    def get_original_content(self, rss_url, timeout=2, headless=True):
+        # Initialize the WebDriver
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        return driver
+
+    def random_user_agent(self):
         # Random User-Agent
         user_agents = [
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -102,17 +121,11 @@ class DataScraper:
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         ]
         user_agent = random.choice(user_agents)
+        return user_agent
+    def get_original_content(self, rss_url, timeout=2, headless=True):
 
-        # Set up Chrome options
-        chrome_options = Options()
-        chrome_options.add_argument(f"user-agent={user_agent}")
-        if headless:
-            chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
+        driver = self.initiate_chrome_driver()
 
-        # Initialize the WebDriver
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
         try:
             # Access the RSS URL
@@ -121,7 +134,7 @@ class DataScraper:
             # Wait for the redirect by checking if the URL changes
             time.sleep(timeout)
             # Wait for an element that indicates the page has fully loaded
-            WebDriverWait(driver, 30).until(
+            WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.TAG_NAME, 'body'))
             )
             # Fetch the final URL
