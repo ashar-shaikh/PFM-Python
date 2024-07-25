@@ -9,14 +9,14 @@ def news_article():
     stock_symbols = parameter_data.getlist('stock_symbols')
     after_date = parameter_data.get('after_date')
     before_date = parameter_data.get('before_date')
-
+    query = parameter_data.get('query')
     if not stock_symbols:
         return jsonify({"status": "error","data": {},"message": "stock_symbols are required"}), 400
     if not after_date:
         return jsonify({"status": "error","data": {},"message": "after_date is required"}), 400
     if not before_date:
         return jsonify({"status": "error","data": {},"message": "before_date is required"}), 400
-
+    
     params = {
         rss.STOCK_SYMBOL: stock_symbols,
         rss.LANGUAGE: 'en',
@@ -25,6 +25,8 @@ def news_article():
         rss.COUNTRY: 'PK',
         rss.SEARCH_QUERY: 'PSX'
     }
+    if query:
+        params[rss.SEARCH_QUERY] = query
     rss_feed = rss.new_rss_feed(params)
     articles, count = rss_feed.fetch_results()
     article_data = []
