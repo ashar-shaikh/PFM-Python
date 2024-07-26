@@ -1,44 +1,29 @@
 from flask import Blueprint, jsonify, request
 import internal.resources.rss_feed as rss
-news_article_bp = Blueprint('news-articles', __name__)
+
+news_endpoint = 'news_articles'
+news_article_bp = Blueprint(news_endpoint, __name__)
 
 
-@news_article_bp.route('/news-articles', methods=['GET'])
+@news_article_bp.route('/' + news_endpoint, methods=['GET'])
 def news_article():
-    parameter_data = request.args
-    stock_symbols = parameter_data.getlist('stock_symbols')
-    after_date = parameter_data.get('after_date')
-    before_date = parameter_data.get('before_date')
-    query = parameter_data.get('query')
-    if not stock_symbols:
-        return jsonify({"status": "error","data": {},"message": "stock_symbols are required"}), 400
-    if not after_date:
-        return jsonify({"status": "error","data": {},"message": "after_date is required"}), 400
-    if not before_date:
-        return jsonify({"status": "error","data": {},"message": "before_date is required"}), 400
-    
+
     params = {
-        rss.STOCK_SYMBOL: stock_symbols,
-        rss.LANGUAGE: 'en',
-        rss.AFTER_DATE: after_date,
-        rss.BEFORE_DATE:  before_date,
-        rss.COUNTRY: 'PK',
-        rss.SEARCH_QUERY: 'PSX'
+
     }
-    if query:
-        params[rss.SEARCH_QUERY] = query
+
     rss_feed = rss.new_rss_feed(params)
     articles, count = rss_feed.fetch_results()
     article_data = []
     if articles:
         for article in articles:
             article_data.append({
-                'id': article['id'],
-                'title': article['title'],
-                'link': article['link'],
-                'description': article['description'],
-                'published': article['published'].strftime('%Y-%m-%d %H:%M:%S'),
-                'source': article['source']
+                'id': article['id'] if 'id' in article else None,
+                'title': article['title'] if 'title' in article else 'Unknown',
+                'link': article['link'] if 'link' in article else 'Unknown',
+                'description': article['description'] if 'description' in article else 'Unknown',
+                'published': article['published'].strftime('%Y-%m-%d %H:%M:%S') if 'published' in article else 'Unknown',
+                'source': article['source'] if 'source' in article else 'Unknown'
             })
 
         return jsonify({"status": "success","data": article_data,"count": count}), 200

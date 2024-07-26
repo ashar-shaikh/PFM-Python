@@ -10,7 +10,7 @@ from time import mktime
 
 
 class RSSFeed:
-    base_url = "https://news.google.com/rss/search?"
+    base_url = "https://www.brecorder.com/feeds/latest-news?"
 
     def __init__(self, params):
         self.params = params
@@ -52,7 +52,6 @@ class RSSFeed:
         if rss.LANGUAGE in self.params:
             query_params['hl'] = self.params[rss.LANGUAGE]
 
-
         # Encode query parameters
         query_string = urlencode(query_params)
 
@@ -72,12 +71,12 @@ class RSSFeed:
         articles = []
         for entry in feed.entries:
             article = {
-                'id': entry.id,
-                'title': entry.title,
-                'link': entry.link if 'link' in entry else self.extract_link_from_description(entry.description),
-                'description': self.clean_description(entry.description),
-                'published': datetime.fromtimestamp(mktime(entry.published_parsed)),
-                'source': entry.source.title if 'source' in entry else 'Unknown'
+                'id': entry.id if 'id' in entry else entry.guid if 'guid' in entry else None,
+                'title': entry.title if 'title' in entry else 'Unknown',
+                'link': entry.link if 'link' in entry else 'Unknown',
+                'description': self.clean_description(entry.description) if 'description' in entry else 'Unknown',
+                'published': datetime.fromtimestamp(mktime(entry.published_parsed)) if
+                'published_parsed' in entry else 'Unknown'
             }
             articles.append(article)
         return articles
