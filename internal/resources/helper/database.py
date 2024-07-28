@@ -15,6 +15,9 @@ class DatabaseManager:
         self.storage = Storage(db_url)
         self.logger = LoggerManager('DatabaseManager').logger
 
+    def check_connection(self):
+        return self.storage.check_connection()
+
     def get_session(self):
         return self.storage.get_session()
 

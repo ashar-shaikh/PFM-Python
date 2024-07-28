@@ -8,5 +8,13 @@ class Storage:
         self.engine = create_engine(db_url)
         self.Session = scoped_session(sessionmaker(bind=self.engine))
 
+    def check_connection(self):
+        try:
+            connection = self.engine.connect()
+            connection.close()
+            return True
+        except Exception as e:
+            return False, str(e)
+
     def get_session(self):
         return self.Session()

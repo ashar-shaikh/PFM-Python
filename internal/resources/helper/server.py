@@ -60,11 +60,19 @@ class Server:
         self.logger.error("Error response generated", context=context, response=response)
         return jsonify(response), status_code
 
+    def check_db_connection(self):
+        connected, error = self.db_manager.check_connection()
+        if not connected:
+            self.logger.error(f"Failed to connect to the database: {error}")
+            raise Exception(f"Failed to connect to the database: {error}")
+        self.logger.info("Database connection successful")
+
     def run(self, **kwargs):
         self.middleware()
         self.add_routes()
         # noinspection PyPropertyAccess
         self.app.logger = self.logger
         self.app.db_manager = self.db_manager
+        self.check_db_connection()
         self.logger.info("Starting Flask Server")
         self.app.run(**kwargs)
