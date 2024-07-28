@@ -1,7 +1,4 @@
-from internal.webserver import create_app
-
-app = create_app()
+from internal.webserver import app_run
 
 if __name__ == '__main__':
-    app.logger.info("Starting Flask Server")
-    app.run(debug=True)
+    app = app_run()

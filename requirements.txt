@@ -2,3 +2,5 @@ Flask~=3.0.3
 requests~=2.32.3
 beautifulsoup4~=4.12.3
 feedparser~=6.0.11
+SQLAlchemy~=2.0.31
+pymysql~=1.1.1

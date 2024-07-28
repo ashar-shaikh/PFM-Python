@@ -66,7 +66,6 @@ def get_market_summary():
         parsed_stock_data = parse_all_stock_data(response)
         # Respond with current time
         final_resp = {
-            "success": True,
             "date": datetime.datetime.now().timestamp(),
             "data": parsed_stock_data
         }

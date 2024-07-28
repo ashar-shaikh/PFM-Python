@@ -12,53 +12,11 @@ from time import mktime
 class RSSFeed:
     base_url = "https://www.brecorder.com/feeds/latest-news?"
 
-    def __init__(self, params):
-        self.params = params
+    def __init__(self):
+        self.params = {}
 
     def build_url(self):
-        # Initialize query parameters
-        query_params = {}
-
-        # Handle StockSymbol (Assuming OR logic for multiple symbols)
-        if rss.STOCK_SYMBOL in self.params:
-            stock_symbols_query = ' OR '.join(self.params[rss.STOCK_SYMBOL])
-            if len(stock_symbols_query) > 4 and stock_symbols_query[:4] == ' OR ':
-                stock_symbols_query = stock_symbols_query[4:]
-            query_params['q'] = "(" + stock_symbols_query + ")"
-
-        if rss.SEARCH_QUERY in self.params:
-            if len(query_params['q']) > 1:
-                query_params['q'] += ' AND ' + self.params[rss.SEARCH_QUERY]
-            else:
-                query_params['q'] = self.params[rss.SEARCH_QUERY]
-        # Handle date range
-        date_query = []
-        if rss.AFTER_DATE in self.params:
-            after_date = self.params[rss.AFTER_DATE]
-            date_query.append(f'after:{after_date}')
-        if rss.BEFORE_DATE in self.params:
-            before_date = self.params[rss.BEFORE_DATE]
-            date_query.append(f'before:{before_date}')
-        if date_query:
-            if 'q' in query_params:
-                query_params['q'] += ' ' + ' '.join(date_query)
-            else:
-                query_params['q'] = ' '.join(date_query)
-
-        if rss.COUNTRY in self.params:
-            query_params['ceid'] = self.params[rss.COUNTRY]
-
-        # Handle language
-        if rss.LANGUAGE in self.params:
-            query_params['hl'] = self.params[rss.LANGUAGE]
-
-        # Encode query parameters
-        query_string = urlencode(query_params)
-
-        # Construct full URL
-        full_url = self.base_url + query_string
-
-        return full_url
+        return self.base_url
 
     def fetch_feed(self):
         url = self.build_url()

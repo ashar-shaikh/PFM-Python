@@ -7,12 +7,7 @@ news_article_bp = Blueprint(news_endpoint, __name__)
 
 @news_article_bp.route('/' + news_endpoint, methods=['GET'])
 def news_article():
-
-    params = {
-
-    }
-
-    rss_feed = rss.new_rss_feed(params)
+    rss_feed = rss.new_rss_feed()
     articles, count = rss_feed.fetch_results()
     article_data = []
     if articles:

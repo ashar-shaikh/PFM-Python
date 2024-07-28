@@ -26,9 +26,12 @@ class LoggerManager:
             return json.dumps(log_record)
 
     def log(self, level, msg, context=None, **kwargs):
-        extra = {
-            "trace_id": context.trace_id if context else ""
-        }
+        if context:
+            extra = {
+                "trace_id": context.trace_id if context else "",
+            }
+        else:
+            extra = kwargs
         self.logger.log(level, msg, extra=extra)
 
     def info(self, msg, context=None, **kwargs):
