@@ -12,7 +12,7 @@ class Storage:
         try:
             connection = self.engine.connect()
             connection.close()
-            return True
+            return True, None
         except Exception as e:
             return False, str(e)
 

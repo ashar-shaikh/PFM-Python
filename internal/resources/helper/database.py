@@ -57,11 +57,14 @@ class DatabaseManager:
                     setattr(instance, key, value)
                 session.commit()
                 self.logger.info(f'Updated {model.__name__} with id {id}', context)
+                return True, instance
             else:
                 self.logger.warning(f'No {model.__name__} found with id {id}', context)
+                return False, None
         except Exception as e:
             session.rollback()
             self.logger.error(f'Error updating {model.__name__} with id {id}: {e}', context, exc_info=True)
+            return False, None
         finally:
             session.close()
 

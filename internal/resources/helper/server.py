@@ -72,7 +72,8 @@ class Server:
         self.add_routes()
         # noinspection PyPropertyAccess
         self.app.logger = self.logger
-        self.app.db_manager = self.db_manager
+        # noinspection PyPropertyAccess
+        self.app.storage = self.db_manager
         self.check_db_connection()
         self.logger.info("Starting Flask Server")
         self.app.run(**kwargs)
