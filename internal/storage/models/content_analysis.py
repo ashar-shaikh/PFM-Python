@@ -4,6 +4,18 @@ from internal.storage.models.base import Base
 
 
 class ContentAnalysis(Base):
+    """
+    Content Analysis Model
+
+    Fields:
+    id (int): Primary Key
+    content_id (int): Content ID
+    classification (str): Classification of the content
+    sentiment (str): Sentiment of the content
+    summary (str): Summary of the content
+    created_at (datetime): Created at timestamp
+    updated_at (datetime): Updated at timestamp
+    """
     __tablename__ = 'content_analysis'
     id = Column(Integer, Sequence('content_analysis_id_seq'), primary_key=True)
     content_id = Column(Integer, nullable=False)

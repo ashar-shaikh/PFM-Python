@@ -5,6 +5,23 @@ from internal.storage.models.base import Base
 
 
 class NewsContent(Base):
+    """
+    News Content Model
+
+    Fields:
+    - id: Integer, Primary Key, auto-incrementing.
+    - feed_id: Integer, Not Null. Represents the ID of the feed.
+    - guid: String(255), Not Null. Represents the GUID of the content.
+    - title: String(255). Represents the title of the content.
+    - link: String(255). Represents the link of the content.
+    - pub_date: DateTime. Represents the publication date of the content.
+    - description: String. Represents the description of the content.
+    - content: String. Represents the content.
+    - is_discarded: Boolean, Default: False. Represents if the content is discarded.
+    - is_analyzed: Boolean, Default: False. Represents if the content is analyzed.
+    - created_at: DateTime, Default: datetime.utcnow. Timestamp when the record was created.
+    - updated_at: DateTime, Default: datetime.utcnow, onupdate: datetime.utcnow. Timestamp when the record was last updated.
+    """
     __tablename__ = 'news_content'
     id = Column(Integer, Sequence('news_content_id_seq'), primary_key=True)
     feed_id = Column(Integer, nullable=False)

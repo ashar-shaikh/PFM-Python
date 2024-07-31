@@ -4,6 +4,20 @@ from internal.storage.models.base import Base
 
 
 class BackgroundTasks(Base):
+    """
+    Background Tasks Model
+
+    Fields:
+    id (int): Primary Key
+    task_name (str): Task Name
+    update_time (datetime): Update Time
+    row_count (int): Row Count
+    status (str): Status
+    completed_rows (int): Completed Rows
+    failure_reason (str): Failure Reason
+    created_at (datetime): Created at timestamp
+    updated_at (datetime): Updated at timestamp
+    """
     __tablename__ = 'background_tasks'
     id = Column(Integer, Sequence('background_tasks_id_seq'), primary_key=True)
     task_name = Column(String(50), nullable=False)
