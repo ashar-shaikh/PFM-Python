@@ -5,6 +5,7 @@ from datetime import datetime
 
 class LoggerManager:
     def __init__(self, name):
+        self.name = name
         self.logger = self._setup_logger(name)
 
     def _setup_logger(self, name):
@@ -18,6 +19,7 @@ class LoggerManager:
     class JSONFormatter(logging.Formatter):
         def format(self, record):
             log_record = {
+                "name": record.name,
                 "timestamp": datetime.utcnow().isoformat(),
                 "level": record.levelname,
                 "message": record.msg,

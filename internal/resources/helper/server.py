@@ -7,11 +7,12 @@ from internal.resources.helper.context import Context
 
 
 class Server:
-    def __init__(self, name, routes, db_config):
+    def __init__(self, name, routes, db_config, port=5000):
         self.app = Flask(name)
         self.logger = LoggerManager(name)
         self.routes = routes
         self.db_manager = DatabaseManager(**db_config)
+        self.port = port
 
     def middleware(self):
         @self.app.before_request
@@ -75,5 +76,5 @@ class Server:
         # noinspection PyPropertyAccess
         self.app.storage = self.db_manager
         self.check_db_connection()
-        self.logger.info("Starting Flask Server")
+        self.logger.info("Starting Flask Server", context=None, port=self.port)
         self.app.run(**kwargs)

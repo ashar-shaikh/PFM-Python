@@ -1,4 +1,4 @@
-from internal.webserver import app_run
+from internal.application.app import App
 
 if __name__ == '__main__':
-    app = app_run()
+    App("stock_watcher").run()
