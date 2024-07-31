@@ -1,6 +1,4 @@
-from flask import Flask
 import internal.webserver.routes as r
-import internal.resources.helper.logger as logger
 from internal.resources.helper.server import Server
 from internal.application import flags
 

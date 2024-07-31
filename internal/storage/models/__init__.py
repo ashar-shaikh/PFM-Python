@@ -1,6 +1,7 @@
 from .base import Base
-from .user import User
-from .user_information_etc import UserInformation
+from .rss_feeds import RSSFeeds
+from .background_tasks import BackgroundTasks
+from .news_content import NewsContent
 
 # Expose the models
-__all__ = ['Base', 'User', 'UserInformation']
+__all__ = ['Base', 'RSSFeeds', 'BackgroundTasks', 'NewsContent']
