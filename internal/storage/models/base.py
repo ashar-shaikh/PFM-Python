@@ -17,3 +17,6 @@ class Base:
                 data[key] = getattr(self, key)
         data['__name__'] = self.__class__.__name__
         return data
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {getattr(self, "id")}>'

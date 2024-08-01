@@ -50,7 +50,7 @@ class Server:
         self.logger.info("Response generated", context=context, response=response)
         return jsonify(response), status_code
 
-    def handle_error(self, message, error_code, status_code=400 , context=None):
+    def handle_error(self, message, error_code, status_code=400, context=None):
         response = {
             "success": False,
             "error": {

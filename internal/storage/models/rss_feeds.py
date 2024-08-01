@@ -25,3 +25,10 @@ class RSSFeeds(Base):
     last_successfully_monitored = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @classmethod
+    def get_feed_by_link(cls, session, feed_link):
+        try:
+            return session.query(cls).filter_by(feed_link=feed_link).first()
+        except Exception as e:
+            raise e
