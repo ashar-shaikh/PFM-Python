@@ -1,4 +1,4 @@
-from internal.resources.helper.flags import Flags
+from internal.resources.generic.helper.flags import Flags
 
 flags = Flags(env_file="sample.env")
 

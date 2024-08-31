@@ -1,7 +1,6 @@
-from flask import Blueprint, jsonify, g
+from flask import Blueprint, g
 from flask import current_app as s
-import internal.resources.market_data as market_data
-import internal.storage.models as model
+import internal.resources.assets.market_data as market_data
 
 endpoint_market_summary = 'market_summary'
 market_summary_bp = Blueprint(endpoint_market_summary, __name__)

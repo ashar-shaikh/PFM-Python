@@ -1,5 +1,5 @@
 import internal.webserver.routes as r
-from internal.resources.helper.server import Server
+from internal.resources.generic.helper.server import Server
 from internal.application import flags
 
 

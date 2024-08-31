@@ -3,13 +3,13 @@ from sqlalchemy import Column, Integer, String, Sequence, DateTime
 from internal.storage.models.generic.base import Base
 
 
-class Assets(Base):
+class Asset(Base):
     """
     Assets model represents the assets.
 
     Fields:
     - id: Integer, Primary Key, auto-incrementing.
-    - ticker_symbol: String(10), Not Null, Unique. Represents the ticker symbol of the asset.
+    - asset_symbol: String(10), Not Null, Unique. Represents the symbol of the asset.
     - asset_name: String(255), Not Null. Represents the name of the asset.
     - asset_type: String(50), Not Null, Default: 'stock'. Represents the type of the asset.
     - description: String(250). Represents the description of the asset.
@@ -19,9 +19,9 @@ class Assets(Base):
     - updated_at: DateTime, Default: datetime.utcnow, onupdate: datetime.utcnow. Timestamp when the record was last updated.
     """
 
-    __tablename__ = 'assets'
-    id = Column(Integer, Sequence('assets_id_seq'), primary_key=True)
-    ticker_symbol = Column(String(10), nullable=False, unique=True)
+    __tablename__ = 'asset'
+    id = Column(Integer, Sequence('asset_id_seq'), primary_key=True)
+    asset_symbol = Column(String(10), nullable=False, unique=True)
     asset_name = Column(String(255), nullable=False)
     asset_type = Column(String(50), nullable=False, default='stock')
     description = Column(String(250))
@@ -33,7 +33,7 @@ class Assets(Base):
     def get(self):
         data = {
             'id': self.id,
-            'ticker_symbol': self.ticker_symbol,
+            'asset_symbol': self.asset_symbol,
             'asset_name': self.asset_name,
             'asset_type': self.asset_type,
             'description': self.description,

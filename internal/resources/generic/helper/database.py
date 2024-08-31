@@ -1,6 +1,5 @@
-from sqlalchemy.orm import joinedload
 from internal.storage.storage import Storage
-from internal.resources.helper.logger import LoggerManager
+from internal.resources.generic.helper.logger import LoggerManager
 
 class DatabaseManager:
     def __init__(self, db_type, username, password, host, port, database):
@@ -90,3 +89,45 @@ class DatabaseManager:
         finally:
             if not session_provided:
                 self.close_session(session, context)
+
+    def fetch_all(self, model_class, limit=None, offset=None, filters=None, order_by=None, session=None, context=None):
+        """
+        Fetches all records for a given model class with optional limits, offsets, and filters.
+
+        :param model_class: The ORM model class to fetch data from.
+        :param limit: The maximum number of records to return.
+        :param offset: The number of records to skip before starting to return records.
+        :param filters: A dictionary of filters to apply to the query.
+        :param order_by: The field by which to order the results.
+        :param session: Optional session object if already within a session context.
+        :param context: Optional context for logging.
+        :return: A list of records fetched from the database.
+        """
+        session_provided = session is not None
+        session = session or self.get_session()
+        try:
+            query = session.query(model_class)
+
+            if filters:
+                for key, value in filters.items():
+                    query = query.filter(getattr(model_class, key) == value)
+
+            if order_by:
+                query = query.order_by(order_by)
+
+            if limit:
+                query = query.limit(limit)
+
+            if offset:
+                query = query.offset(offset)
+
+            result = query.all()
+            self.logger.info(f'Fetched {len(result)} records from {model_class.__name__}', context)
+            return result
+        except Exception as e:
+            self.logger.error(f'Error fetching records from {model_class.__name__}: {e}', context, exc_info=True)
+            raise
+        finally:
+            if not session_provided:
+                self.close_session(session, context)
+                

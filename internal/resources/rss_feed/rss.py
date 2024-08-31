@@ -10,13 +10,12 @@ from time import mktime
 
 
 class RSSFeed:
-    base_url = "https://www.brecorder.com/feeds/latest-news?"
-
-    def __init__(self):
-        self.params = {}
+    def __init__(self, base_url="https://www.brecorder.com/feeds/latest-news?", params=None):
+        self.base_url = base_url
+        self.params = params if params is not None else {}
 
     def build_url(self):
-        return self.base_url
+        return self.base_url + urlencode(self.params)
 
     def fetch_feed(self):
         url = self.build_url()

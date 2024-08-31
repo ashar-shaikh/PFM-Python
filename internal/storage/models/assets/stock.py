@@ -3,9 +3,9 @@ from sqlalchemy import Column, Integer, String, Sequence, DateTime
 from internal.storage.models.generic.base import Base
 
 
-class Stocks(Base):
+class Stock(Base):
     """
-    Stocks model represents the stocks.
+    Stocks model represents the stock.
 
     Fields:
     - id: Integer, Primary Key, auto-incrementing.
@@ -17,8 +17,8 @@ class Stocks(Base):
     - created_at: DateTime, Default: datetime.utcnow. Timestamp when the record was created.
     - updated_at: DateTime, Default: datetime.utcnow, onupdate: datetime.utcnow. Timestamp when the record was last updated.
     """
-    __tablename__ = 'stocks'
-    id = Column(Integer, Sequence('stocks_id_seq'), primary_key=True)
+    __tablename__ = 'stock'
+    id = Column(Integer, Sequence('stock_id_seq'), primary_key=True)
     asset_id = Column(Integer, nullable=False)
     ticker_symbol = Column(String(10), nullable=False, unique=True)
     market = Column(String(50), nullable=False, default='PSX')

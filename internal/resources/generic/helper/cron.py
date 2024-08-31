@@ -2,7 +2,7 @@ import uuid
 import schedule
 import time
 from datetime import datetime
-from internal.resources.helper.logger import LoggerManager
+from internal.resources.generic.helper.logger import LoggerManager
 
 
 class Cron:

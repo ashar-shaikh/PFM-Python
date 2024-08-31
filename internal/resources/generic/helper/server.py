@@ -1,9 +1,9 @@
 import uuid
 from flask import Flask, request, g, jsonify
 
-from internal.resources.helper.database import DatabaseManager
-from internal.resources.helper.logger import LoggerManager
-from internal.resources.helper.context import Context
+from internal.resources.generic.helper.database import DatabaseManager
+from internal.resources.generic.helper.logger import LoggerManager
+from internal.resources.generic.helper.context import Context
 
 
 class Server:

@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify, g, request
+from flask import Blueprint, g, request
 from flask import current_app as s
-import internal.storage.models as m
+from internal.services.news.feed_service import FeedService
 
 endpoint_new_feed = 'add_new_feed'
 add_new_feed_bp = Blueprint(endpoint_new_feed, __name__)
@@ -19,25 +19,14 @@ def new_feed():
 
             language = request.json.get('language', 'en')
 
-            feed = m.RSSFeeds()
-            feed.feed_link = url
-            # Check if the feed already exists
-            existing_feed = storage.execute(m.RSSFeeds.get_feed_by_link, feed_link=url, context=ctx)
-            if existing_feed:
-                return g.server.handle_error("Feed already exists", 0, 400, ctx)
+            # Create an instance of FeedService with the current session, context, and storage
+            feed_service = FeedService(storage=storage, context=ctx, session=session)
+            result, error = feed_service.add_feed(url, language)
 
-            # If no existing feed, create a new one
-            feed.lang = language
-            feed.is_active = True
-            is_success, _, err = storage.add(feed, ctx, session=session)
-            if is_success:
-                # Check if the feed was added successfully
-                added_feed = storage.execute(m.RSSFeeds.get_feed_by_link, session=session, feed_link=url, context=ctx)
-                if added_feed:
-                    return g.server.handle_response(added_feed.get(), ctx)
-                else:
-                    return g.server.handle_error("Failed to verify the new feed", 0, 500, ctx)
-            else:
-                return g.server.handle_error(err, 0, 500, ctx)
+            if error:
+                return g.server.handle_error(error, 0, 400, ctx)
+
+            return g.server.handle_response(result, ctx)
+
         except Exception as e:
             return g.server.handle_error(str(e), 0, 500, ctx)
