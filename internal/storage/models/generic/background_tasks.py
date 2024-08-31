@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Sequence, DateTime
-from internal.storage.models.base import Base
+from internal.storage.models.generic.base import Base
 
 
 class BackgroundTasks(Base):

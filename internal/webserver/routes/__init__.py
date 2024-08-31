@@ -1,6 +1,6 @@
-from .news_articles import news_article_bp
-from .market_summary import market_summary_bp
-from .add_new_feed import add_new_feed_bp
+from internal.webserver.routes.news.news_articles import news_article_bp
+from internal.webserver.routes.news.market_summary import market_summary_bp
+from internal.webserver.routes.news.add_new_feed import add_new_feed_bp
 
 handlers = {
     'market_summary': {

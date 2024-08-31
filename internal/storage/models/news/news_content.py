@@ -1,7 +1,6 @@
-import json
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Sequence, DateTime, Boolean
-from internal.storage.models.base import Base
+from internal.storage.models.generic.base import Base
 
 
 class NewsContent(Base):
