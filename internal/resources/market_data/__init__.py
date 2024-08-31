@@ -1,1 +1,0 @@
-from internal.resources.market_data.scraper import get_market_summary
