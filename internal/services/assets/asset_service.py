@@ -25,14 +25,35 @@ class AssetService:
             err = f"Error looking up asset: {repr(e)}"
             return None, None, err
 
-    def create_new_asset(self, ticker_symbol, country='PK',  sector='', industry=''):
+    def create_new_asset(self, ticker_symbol, name='', description='', currency='', country='PK'):
         asset = Asset()
+        asset.asset_name = name
         asset.asset_symbol = ticker_symbol
-        asset.asset_name = "Full Stock Name"
         asset.country = country
-        asset.sector = sector
-        asset.industry = industry
+        asset.currency = currency
+        asset.description = description
+
         _, asset_id, err = self.storage.add(asset)
-        if err is not None:
+        if err:
             return 0, err
+        if asset_id is None:
+            return 0, "Failed to create asset"
         return asset_id, None
+
+    def clean_existing_assets(self, existing_stocks):
+        try:
+            asset_data = self.storage.fetch_all(
+                model_class=Asset,
+                filters={'asset_symbol': existing_stocks,
+                         'asset_type': 'stock',
+                         'country': 'PK'}
+            )
+            resp_data = {}
+
+            for asset in asset_data:
+                if asset.asset_symbol not in existing_stocks:
+                    resp_data[asset.asset_symbol] = asset.id
+            return existing_stocks, None
+        except Exception as e:
+            err = f"Error fetching existing stocks: {repr(e)}"
+            return None, err

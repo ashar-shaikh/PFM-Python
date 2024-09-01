@@ -5,7 +5,7 @@ CREATE TABLE asset (
     asset_name VARCHAR(255) NOT NULL,
     asset_type VARCHAR(50) NOT NULL,  -- e.g., 'stock', 'real_estate', 'art'
     asset_symbol VARCHAR(10) NULL,
-    description VARCHAR(250),
+    description text,
     country VARCHAR(100) DEFAULT 'PK',
     currency VARCHAR(3) NOT NULL DEFAULT 'PKR',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -18,7 +18,6 @@ CREATE TABLE stock (
     ticker_symbol VARCHAR(10) NOT NULL UNIQUE,
     market VARCHAR(50) NOT NULL DEFAULT 'PSX',
     sector VARCHAR(100),
-    industry VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_asset_id_stock (asset_id),

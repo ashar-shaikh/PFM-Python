@@ -14,7 +14,8 @@ class App:
             'database': flags.db_name
         }
         self.server = Server(name, r.handlers, db_config)
+        self.port = flags.server_port
 
     def run(self):
-        self.server.run(debug=True)
+        self.server.run(debug=True, port=self.port)
         return None
